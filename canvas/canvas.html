@@ -1,0 +1,123 @@
+<html>
+    <header>
+        <script type="text/javascript" src="canvas.js"></script>
+    </header>
+    <body>
+        <form id="Selector">
+            <select id="selectFunct">
+            </select>
+        </form>
+        <canvas id="canvas" width="800" height="800" style="border:1px dotted #000000;">
+        </canvas>
+        <script>
+
+            var select = document.getElementById("selectFunct");
+            var canvas = document.getElementById("canvas");
+            var ctx = canvas.getContext("2d");
+
+            var width = canvas.width;
+            var height = canvas.height;
+
+            var lowestX = -20;
+            var heighestX = 20;
+            var step = 0.2;
+
+            var camera = {
+                pos: {
+                    x : width/2,
+                    y : height/2
+                },
+                zoom : 20
+            }
+
+            var mouse = {
+                downAt : {
+                    x : 0,
+                    y : 0
+                },
+                start: {
+                    x : camera.pos.x,
+                    y : camera.pos.y
+                }
+            }
+
+            var functions = [
+                {
+                    name:"sinX",
+                    funct:functSinX
+                },
+                {
+                    name:"x^3",
+                    funct:functX3
+                }
+            ]
+
+            for (i in functions) {
+                opt = functions[i];
+                var el = document.createElement("option");
+                el.textContent = opt.name;
+                el.label = opt.name;
+                select.appendChild(el);
+            }
+
+            var funct = getValues(lowestX, heighestX, step, functX3);
+
+            select.onchange = function(ev){
+                for (i in select.childNodes) {
+                    if (select.childNodes[i].selected) {
+                        for (j in functions){
+                            if (functions[j].name == select.childNodes[i].label) {
+                                funct = getValues(lowestX, heighestX, step, functions[j].funct);
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+                draw();
+            };
+
+            window.addEventListener("keydown", function(ev){
+                switch (ev.keyCode) {
+                    case 36: // pos1
+                        camera.pos.x = width/2;
+                        camera.pos.y = height/2;
+                        camera.zoom = 18;
+                        draw();
+                        break;
+                    case 37: // left
+                        break;
+                    case 38: // oben
+                        break;
+                    case 39: // rechts
+                        break;
+                    case 40: // unten
+                        break;
+                }
+
+            },false);
+
+            canvas.addEventListener("mousedown", function(ev){
+                canvas.onmousemove = mouseMove;
+                var mousePos = mouseCoords(ev);
+                mouse.downAt.x = mousePos.x;
+                mouse.downAt.y = mousePos.y;
+                mouse.start.x = camera.pos.x;
+                mouse.start.y = camera.pos.y;
+            }, false);
+
+            canvas.addEventListener('mouseup', function(ev) {
+                canvas.onmousemove = null;
+            }, false);
+
+            canvas.addEventListener('mousewheel', function (ev) {
+                var ev = window.event || ev;
+                var delta = ev.wheelDelta / 120 || ev.detail
+                camera.zoom += getZoom(delta);
+                draw();
+            }, false);
+
+            draw();
+        </script>
+    </body>
+</html>

@@ -16,18 +16,23 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild( renderer.domElement);
 
-            window.onkeyup = keyDown;
+            window.onkeydown = keyDown;
 
             var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
             camera.position.set(0,0,20);
 
             var geometry = new THREE.Geometry();
             geometry.vertices.push(
-                new THREE.Vector3( -10, 0, -10 ),
-            	new THREE.Vector3( -5, 5, -5 ),
-            	new THREE.Vector3( 0, 0, 0 ),
-            	new THREE.Vector3( 5, -5, -5 ),
-            	new THREE.Vector3( 10, 0, -10 )
+                new THREE.Vector3( -1, -1, -1 ),
+                new THREE.Vector3( -1, -1, 1 ),
+                new THREE.Vector3( -1, 1, 1 ),
+                new THREE.Vector3( -1, 1, -1 ),
+                new THREE.Vector3( -1, -1, -1 ),
+                new THREE.Vector3( 1, -1, -1 ),
+                new THREE.Vector3( 1, -1, 1 ),
+                new THREE.Vector3( 1, 1, 1 ),
+                new THREE.Vector3( 1, 1, -1 ),
+                new THREE.Vector3( 1, -1, -1 )
             );
 
             var material = new THREE.LineBasicMaterial({
@@ -41,49 +46,55 @@
 
             function render() {
             	requestAnimationFrame( render );
-                line.rotation.x += 0.01;
+                //line.rotation.x += 0.01;
             	renderer.render( scene, camera );
             }
 
             function rotate(dx, dy) {
-                camera.rotation.x += dx;
-                camera.rotation.y += dy;
+                camera.rotateOnAxis(
+                    new THREE.Vector3(1,0,0),
+                    dx
+                );
+                camera.rotateOnAxis(
+                    new THREE.Vector3(0,1,0),
+                    dy
+                );
             }
 
             function translate(dv, ds) {
                 camera.translateZ( dv );
-                camera.translateX( ds );
+                camera.translateddX( ds );
             }
 
             function keyDown(ev){
                 switch (ev.keyCode) {
                     case 87:
-                        translate(0.1,0);
+                        translate(-1,0);
                         break;
                         //w
-                    case 82:
+                    case 83:
                         //s
-                        translate(-0.1,0);
+                        translate(1,0);
                         break;
                     case 65:
                         //a
-                        translate(0,-0.1);
+                        translate(0,-1);
                         break;
                     case 68:
                         //d
-                        translate(0,0.1);
+                        translate(0,1);
                         break;
                     case 39:
-                        rotate(0,-0.1);
+                        rotate(0,-0.05);
                         break;
                     case 37:
-                        rotate(0,+0.1);
+                        rotate(0,+0.05);
                         break;
                     case 38:
-                        rotate(+0.1,0);
+                        rotate(+0.05,0);
                         break;
                     case 40:
-                        rotate(-0.1,0);
+                        rotate(-0.05,0);
                         break;
                 }
             }
